@@ -19,3 +19,7 @@ __pycache__/
 
 # Wandb logs
 wandb/
+
+# SSL certificates
+cert.pem
+key.pem

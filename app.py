@@ -362,13 +362,30 @@ def main():
     # Authentication: requires username/password to access
     auth = None if args.no_auth else (args.username, args.password)
 
-    # share=True creates a public Gradio link (*.gradio.live) accessible to anyone
+    # Generate self-signed SSL certificate for HTTPS
+    import ssl
+    import os
+    cert_path = os.path.join(os.path.dirname(__file__), "cert.pem")
+    key_path = os.path.join(os.path.dirname(__file__), "key.pem")
+
+    # Create self-signed cert if it doesn't exist
+    if not os.path.exists(cert_path) or not os.path.exists(key_path):
+        print("Generating self-signed SSL certificate...")
+        os.system(
+            f'openssl req -x509 -newkey rsa:2048 -keyout {key_path} -out {cert_path} '
+            f'-days 365 -nodes -subj "/CN=localhost"'
+        )
+
+    # HTTPS with authentication
     demo.launch(
         server_name="0.0.0.0",
         server_port=args.port,
-        share=True,          # Creates a public URL anyone can access
+        share=False,
         css=CSS,
-        auth=auth,           # Requires login to use the app
+        auth=auth,
+        ssl_certfile=cert_path,
+        ssl_keyfile=key_path,
+        ssl_verify=False,  # Skip self-signed cert verification for internal health check
     )
     print("\n🔒 App is secured with authentication.")
     print(f"   Username: {args.username}")

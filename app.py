@@ -348,11 +348,32 @@ def main():
     parser.add_argument("--model_dir", type=str, default="smol-finetuned")
     parser.add_argument("--share", action="store_true")
     parser.add_argument("--port", type=int, default=7860)
+    parser.add_argument("--username", type=str, default="admin",
+                        help="Login username for the app")
+    parser.add_argument("--password", type=str, default="mygpt2024",
+                        help="Login password for the app")
+    parser.add_argument("--no-auth", action="store_true",
+                        help="Disable authentication")
     args = parser.parse_args()
 
     model, tokenizer, device = load_model(args.model_dir)
     demo = create_app(model, tokenizer, device)
-    demo.launch(server_name="0.0.0.0", server_port=args.port, share=args.share, css=CSS)
+
+    # Authentication: requires username/password to access
+    auth = None if args.no_auth else (args.username, args.password)
+
+    # share=True creates a public Gradio link (*.gradio.live) accessible to anyone
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=args.port,
+        share=True,          # Creates a public URL anyone can access
+        css=CSS,
+        auth=auth,           # Requires login to use the app
+    )
+    print("\n🔒 App is secured with authentication.")
+    print(f"   Username: {args.username}")
+    print(f"   Password: {args.password}")
+    print("   Change these with --username and --password flags.")
 
 
 if __name__ == "__main__":

@@ -207,7 +207,7 @@ def create_app(model, tokenizer, device):
                 )
                 # Max tokens slider
                 max_tokens = gr.Slider(
-                    64, 1024, value=256, step=64,
+                    64, 1024, value=128, step=64,
                     label="Max tokens",
                 )
                 # Top-p slider
@@ -287,7 +287,7 @@ def create_app(model, tokenizer, device):
             user_msg = history[-1].content if hasattr(history[-1], 'content') else history[-1]["content"]
 
             # Format with instruction template
-            formatted = f"### Instruction:\n{user_msg}\n\n### Response:\n"
+            formatted = f"### Instruction:\nYou are a friendly, helpful AI assistant called MyGPT. Respond naturally and conversationally. If the user greets you, greet them back warmly.\n\n{user_msg}\n\n### Response:\n"
             inputs = tokenizer(formatted, return_tensors="pt").to(device)
 
             # Streaming generation

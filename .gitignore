@@ -1,0 +1,21 @@
+# Model checkpoints and fine-tuned weights
+checkpoints/
+smol-finetuned/
+llama-finetuned/
+
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# HuggingFace cache
+.cache/
+
+# OS files
+.DS_Store
+
+# Wandb logs
+wandb/
